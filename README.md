@@ -1,4 +1,4 @@
-# Notes for *Predictive modelling*
+# Notes for *Predictive Modelling*
 
 [![Travis-CI Build Status](https://travis-ci.org/egarpor/SSS2-UC3M.svg?branch=master)](https://travis-ci.org/egarpor/PM-UC3M)
 [![License](https://img.shields.io/badge/license-CC_BY--NC--SA_4.0-blue.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
