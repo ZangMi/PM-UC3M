@@ -1,5 +1,5 @@
 ---
-title: "Notes for Predictive Modelling"
+title: "Notes for Predictive Modeling"
 subtitle: "MSc in Big Data Analytics at Carlos III University of Madrid"
 author: "Eduardo García Portugués"
 date: "`r Sys.Date()`, v0.1"
