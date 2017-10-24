@@ -1,4 +1,20 @@
+---
+output:
+  md_document:
+    variant: markdown_github
+---
+
 <!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, echo = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = ""
+)
+options(width = 80)
+```
+
 Notes for *Predictive Modeling*
 ===============================
 
@@ -21,7 +37,7 @@ Here is a broad view of the **syllabus**:
 4.  [Linear models III](https://bookdown.org/egarpor/PM-UC3M/lm-iii.html) (third/fourth lesson)
 5.  [Generalized linear models](https://bookdown.org/egarpor/PM-UC3M/glm.html) (fifth lesson)
 6.  [Nonparametric regression](https://bookdown.org/egarpor/PM-UC3M/npreg.html) (sixth lesson)
-7.  [Generalized additive models](https://bookdown.org/egarpor/PM-UC3M/gam.html) (seventh lesson -- skipped)
+7.  [Generalized additive models](https://bookdown.org/egarpor/PM-UC3M/gam.html) (seventh lesson -- skipped) 
 
 The **office hours** are **Thursdays from 19:15 to 20:15**, at the classroom in which the lab took place. Make use of them!
 
@@ -90,7 +106,35 @@ Send **one** email per group to <edgarcia@est-econ.uc3m.es> with the subject "PM
 
 Need extra time? Buy it at expenses of a penalization in your grade: `-0.04` points per extra hour! ;) But only until the **25th of January**, reports received after that date will not be graded. The maximum grade according to the hours past the deadline is given in the graph below.
 
-![](unnamed-chunk-2-1.png)
+```{r, message = FALSE, echo = FALSE}
+# Requires lubridate
+# install.packages("lubridate")
+library(lubridate)
+
+# Continuous discounting, each extra hour penalizes with -0.04 points
+penalization <- function(date, deadline) {
+  
+  stopifnot(is.POSIXct(date) & is.POSIXct(deadline))
+  as.numeric(date - deadline, "hours") * 0.04
+  
+}
+
+# The discount graph
+library(ggplot2)
+deadline <- ymd_hms("2017-12-31 23:59:59")
+hours <- seq(0, 216, by = 1)
+penaliz <- penalization(date = deadline + duration(hours, units = "hours"), 
+                        deadline = deadline)
+df <- data.frame(hours = hours, max_grade = pmax(10 - penaliz, 0))
+ggplot(data = df, mapping = aes(x = hours, y = max_grade)) +
+  geom_line() + geom_hline(yintercept = 5, color = "green") +
+  geom_vline(xintercept = c(24, 48, 72), color = "red", lty = 2) + 
+  xlab("Extra hours") + ylab("Maximum grade = grade - penalization") +
+  annotate("text", label = c("1 day ", "2 days", "3 days"), 
+           x = c(24, 48, 72) + 9, y = 0, colour = "red") + 
+  scale_x_continuous(breaks = seq(0, 216, by = 12)) +
+  scale_y_continuous(breaks = 0:10)
+```
 
 ### Project presentations
 
