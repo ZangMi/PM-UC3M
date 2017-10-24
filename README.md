@@ -11,7 +11,7 @@ These are the notes for *Predictive Modeling* for the course 2017/2018. The subj
 
 The notes are available at <https://bookdown.org/egarpor/PM-UC3M>.
 
-The course is designed to have, roughly, **one lesson and one lab for each main topic** in the syllabus. The schedule is tight due to time constraints and festivities, which will inevitably make the treatment of certain methods a little superficial, but hopefully the course will give you a great panoramic view of the different approaches for predictive modeling.
+The course is designed to have, roughly, **one lesson and one lab for each main topic** in the syllabus. The schedule is tight due to time constraints, which will inevitably make the treatment of certain methods a little superficial compared with what it would be the optimal. Nevertheless, the course will hopefully give you a great panoramic view of the different approaches for predictive modeling.
 
 Here is a broad view of the **syllabus**:
 
@@ -94,7 +94,7 @@ Need extra time? Buy it at expenses of a penalization in your grade: `-0.04` poi
 
 ### Project presentations
 
-The **30th of January, from 09:00 to 21:00 in room 0.B.08**, each group must present one of the four projects. The project to present will be randomly selected. On the 25th of January, a list with the presentation topics and presentation schedule will be made public. Restrictions, if any, must be communicated and justified in advance. The presentation will determine the `individual_presentation_grade`.
+The **30th of January, from 09:00 to 21:00 in room 0.B.08**, each group must present one of the four projects. The project to present will be randomly selected. On the 25th of January, a list with the selected reports and presentation schedule will be made public, so you know at which time you have to present. Restrictions, if any, must be communicated and justified in advance. The presentation will determine the `individual_presentation_grade`.
 
 The evaluation will be carried out as follows:
 
