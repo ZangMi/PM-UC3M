@@ -42,45 +42,79 @@ favicon: "favicon.ico"
 -->
 
 ```{block2, type = 'rmdcaution'}
-The **animations** of these notes will not be displayed the first time they are browsed^[The reason is because they are hosted at `https` websites with auto-signed SSL certificates.]. See for example Figure \@ref(fig:mse). **To see them**, click on the caption's link *"Application also available [here](https://ec2-35-177-34-200.eu-west-2.compute.amazonaws.com/dist-mse/)"*. You will get a warning from your browser saying that *"Your connection is not private"*. Click in *"Advanced"* and **allow an exception** in your browser (I guarantee you I will not do anything evil!). The next time the animation will show up correctly within the notes.
+The **animations** of these notes will not be displayed the first time they are browsed^[The reason is because they are hosted at `https` websites with auto-signed SSL certificates.]. See for example Figure \@ref(fig:leastsquares2). **To see them**, click on the caption's link *"Application also available [here](https://ec2-35-177-34-200.eu-west-2.compute.amazonaws.com/least-squares-3D/)"*. You will get a warning from your browser saying that *"Your connection is not private"*. Click in *"Advanced"* and **allow an exception** in your browser (I guarantee you I will not do anything evil!). The next time the animation will show up correctly within the notes.
 ```
 
 ## Course objectives and logistics {#intro-course}
 
 The **software** employed in the course is *the* statistical language [`R`](https://cran.r-project.org/) and its most common IDE (Integrated Development Environment) nowadays, [`RStudio`](https://www.rstudio.com/products/rstudio/download/). A basic prior knowledge of both is assumed^[Among others: basic programming in `R`, ability to work with objects and data structures, ability to produce graphics, knowledge of the main statistical functions, ability to run scripts in `RStudio`.]. The appendix presents basic introductions to `RStudio` and `R` for those students lacking basic expertise on them.
 
-The notes contain a substantial amount of snippets of code that are fully self-contained. Students are encouraged to bring their own laptops at the lessons to practice with the code.
+The notes contain a substantial amount of snippets of code that are fully self-contained. Students are encouraged to bring their own laptops at the labs to practice with the code.
 
 The required packages for the course are:
 ```{r, echo = TRUE, cache = TRUE, warning = FALSE, message = FALSE, eval = FALSE}
 # Install packages
-install.packages(c("ks", "nor1mix", "KernSmooth", "manipulate", "locfit"))
+install.packages(c("ks", "caret", "KernSmooth", "locfit"))
 ```
 
 The codes in the notes may assume that the packages have been loaded, so it is better to do it now:
 ```{r, echo = TRUE, cache = TRUE, warning = FALSE, message = FALSE}
 # Load packages
-library(ks)
-library(nor1mix)
+library(caret)
+library(car)
+library(rgl)
 library(KernSmooth)
-library(manipulate)
 library(locfit)
+library(RcmdrMisc)
 ```
+
 The **Shiny interactive apps** on the notes can be downloaded and run locally. This allows in particular to examine their codes. Check [this GitHub repository](https://github.com/egarpor/ShinyServer) for the sources.
 
-Each topic of this contains a mix of theoretical and practical exercises for **grading**. Groups of *two students* must choose *three exercises* in total (at least one theoretical and other practical) from Sections \@ref(dens-exercises) and \@ref(reg-exercises) and turn them in order to be graded. The group grade is weighted according to the difficulty of the exercises, which is given by the number of stars: easy ($\star$), medium ($\star\star$), and hard ($\star\star\star$). The final grade ($0-5$) is
-$$
-\frac{1}{3}\sum_{i=1}^n\frac{\mathrm{Score}_i}{5}(2+\star_i),
-$$
-where $\mathrm{Score}_i$ is the score ($0-5$) for the $i$-th exercise and $\star_i$ represents its number of stars ($1-3$). Deadline for submission is 2017-10-13.
+## Datasets for the course {#intro-datasets}
 
-## Background and notation {#intro-background}
+This is a handy list with a small description and download link for all the relevant datasets used in the course. To download them, simply **save the link as a file** in your browser.
+
+- `pisa.csv` ([download](https://raw.githubusercontent.com/egarpor/PM-UC3M/master/datasets/pisa.csv)). Contains 65 rows corresponding to the countries that took part on the PISA study. Each row has the variables `Country`, `MeanMath`,` MathShareLow`, `MathShareTop`, `ReadingMean`, `ScienceMean`, `GDPp`, `logGDPp` and `HighIncome`. The `logGDPp` is the logarithm of the `GDPp`, which is taken in order to avoid scale distortions.
+
+- `US_apportionment.xls` ([download](https://raw.githubusercontent.com/egarpor/PM-UC3M/master/datasets/US_apportionment.xls)). Contains the 50 US states entitled to representation in the US House of Representatives. The recorded variables are `State`, `Population2010` and `Seats2013–2023`.
+
+- `EU_apportionment.txt` ([download](https://raw.githubusercontent.com/egarpor/PM-UC3M/master/datasets/EU_apportionment.txt)). Contains 28 rows with the member states for the EU (`Country`), the number of seats assigned under different years (`Seats2011`, `Seats2014`), the Cambridge Compromise apportionment (`CamCom2011`), and the states population (`Population2010`, `Population2013`).
+
+- `least-squares.RData` ([download](https://raw.githubusercontent.com/egarpor/PM-UC3M/master/datasets/least-squares.RData)). Contains a single `data.frame`, named `leastSquares`, with 50 observations of the variables `x`, `yLin`, `yQua` and `yExp`. These are generated as $X\sim\mathcal{N}(0,1)$, $Y_\mathrm{lin}=-0.5+1.5X+\varepsilon$, $Y_\mathrm{qua}=-0.5+1.5X^2+\varepsilon$ and $Y_\mathrm{exp}=-0.5+1.5\cdot2^X+\varepsilon$, with $\varepsilon\sim\mathcal{N}(0,0.5^2)$. The purpose of the dataset is to illustrate the least squares fitting.
+
+- `assumptions.RData` ([download](https://raw.githubusercontent.com/egarpor/PM-UC3M/master/datasets/assumptions.RData)). Contains the data frame `assumptions` with 200 observations of the variables `x1`, ..., `x9` and `y1`, ..., `y9`. The purpose of the dataset is to identify which regression `y1 ~ x1`, ..., `y9 ~ x9` fulfills the assumptions of the linear model. The dataset `moreAssumptions.RData` ([download](https://raw.githubusercontent.com/egarpor/PM-UC3M/master/datasets/moreAssumptions.RData)) has the same structure.
+
+- `cpus.txt` ([download](https://raw.githubusercontent.com/egarpor/PM-UC3M/master/datasets/cpus.txt)) and `gpus.txt` ([download](https://raw.githubusercontent.com/egarpor/PM-UC3M/master/datasets/gpus.txt)). The datasets contain 102 and 35 rows, respectively, of commercial CPUs and GPUs appeared since the first models up to nowadays. The variables in the datasets are `Processor`, `Transistor count`, `Date of introduction`, `Manufacturer`, `Process` and `Area`.
+
+- `hap.txt` ([download](https://raw.githubusercontent.com/egarpor/PM-UC3M/master/datasets/hap.txt)). Contains data for 20 advanced economies in the time period 1946–2009, measured for 31 variables. Among those, the variable `dRGDP` represents the real GDP growth (as a percentage) and `debtgdp` represents the percentage of public debt with respect to the GDP.
+
+- `wine.csv` ([download](https://raw.githubusercontent.com/egarpor/PM-UC3M/master/datasets/wine.csv)). The dataset is formed by the auction `Price` of 27 red Bordeaux vintages, four vintage descriptors (`WinterRain`, `AGST`, `HarvestRain`, `Age`) and the population of France in the year of the vintage, `FrancePop`.
+
+- `Boston.xlsx` ([download](https://raw.githubusercontent.com/egarpor/PM-UC3M/master/datasets/Boston.xlsx)). The dataset contains 14 variables describing 506 suburbs in Boston. Among those variables, `medv` is the median house value, `rm` is the average number of rooms per house and `crim` is the per capita crime rate. The full description is available in `?Boston`.
+
+- `assumptions3D.RData` ([download](https://raw.githubusercontent.com/egarpor/PM-UC3M/master/datasets/assumptions3D.RData)). Contains the data frame `assumptions3D` with 200 observations of the variables `x1.1`, ..., `x1.8`, `x2.1`, ..., `x2.8` and `y.1`, ..., `y.8`. The purpose of the dataset is to identify which regression `y.1 ~ x1.1 + x2.1`, ..., `y.8 ~ x1.8 + x2.8` fulfills the assumptions of the linear model.
+
+- `challenger.txt` ([download](https://raw.githubusercontent.com/egarpor/PM-UC3M/master/datasets/challenger.txt)). Contains data for 23 Space-Shuttle launches. The data consists of 23 shuttle flights. There are 8 variables. Among them: `temp`, the temperature in Celsius degrees at the time of launch, and `fail.field`	and `fail.nozzle`, indicators of whether there were an incidents in the O-rings of the field joints and nozzles of the solid rocket boosters.
+
+- `eurojob.txt` ([download](https://raw.githubusercontent.com/egarpor/PM-UC3M/master/datasets/eurojob.txt)). Contains data for employment in 26 European countries. There are 9 variables, giving the percentage of employments in 9 sectors: `Agr` (Agriculture), `Min` (Mining), `Man` (Manufacture), `Pow` (Power), `Con` (Construction), `Ser` (Sevices), `Fin` (Finance), `Soc` (Social) and `Tra` (Transport).
+
+- `Chile.txt` ([download](https://raw.githubusercontent.com/egarpor/PM-UC3M/master/datasets/Chile.txt)). Contains data for 2700 respondents on a survey for the voting intentions in the 1988 Chilean national plebiscite. There are 8 variables: `region`, `population`, `sex`, `age`, `education`, `income`, `statusquo` (scale of support for the status quo) and `vote`. `vote` is a factor with levels `A` (abstention), `N` (against Pinochet), `U` (undecided), `Y` (for Pinochet). Available in `R` through the package `car` and `data(Chile)`.
+
+- `USArrests.txt` ([download](https://raw.githubusercontent.com/egarpor/PM-UC3M/master/datasets/USArrests.txt)). Arrest statistics for `Assault`, `Murder` and `Rape` in each of the 50 US states in 1973. The percent of the population living in urban areas, `UrbanPop`, is also given. Available in `R` through `data(USArrests)`.
+
+- `USJudgeRatings.txt` ([download](https://raw.githubusercontent.com/egarpor/PM-UC3M/master/datasets/USJudgeRatings.txt)). Lawyers' ratings of state judges in the US Superior Court. The dataset contains 43 observations of 12 variables measuring the performance of the judge when conducting a trial. Available in `R` through `data(USJudgeRatings)`.
+
+- `la-liga-2015-2016.xlsx` ([download](https://raw.githubusercontent.com/egarpor/PM-UC3M/master/datasets/la-liga-2015-2016.xlsx)). Contains 19 performance metrics for the 20 football teams in La Liga 2015/2016.
+
+- `pisaUS2009.csv` ([download](https://raw.githubusercontent.com/egarpor/PM-UC3M/master/datasets/pisaUS2009.csv)). Reading score of 3663 US students in the PISA test, with 23 variables informing about the student profile and family background.
 
 ## Main references and credits {#intro-credits}
 
 Several great reference books have been used for preparing these notes. The following list details the sections in which each of them has been consulted:
 
 - @Wasserman2004
+- @James2013
+- @Pena2002
 
 In addition, these notes are possible due to the existence of these incredible pieces of software: @R-bookdown, @R-knitr, @R-rmarkdown, and @R-base.
 
