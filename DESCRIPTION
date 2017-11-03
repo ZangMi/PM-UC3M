@@ -12,6 +12,7 @@ Depends:
     rgl,
     ks,
     KernSmooth,
+    locfit,
     nor1mix
 Imports: bookdown
 Remotes: rstudio/bookdown
