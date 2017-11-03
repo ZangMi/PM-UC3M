@@ -20,8 +20,7 @@ Here is a broad view of the **syllabus**:
 3.  [Linear models II](https://bookdown.org/egarpor/PM-UC3M/lm-ii.html) (second/third lesson)
 4.  [Linear models III](https://bookdown.org/egarpor/PM-UC3M/lm-iii.html) (third/fourth lesson)
 5.  [Generalized linear models](https://bookdown.org/egarpor/PM-UC3M/glm.html) (fifth lesson)
-6.  [Nonparametric regression](https://bookdown.org/egarpor/PM-UC3M/npreg.html) (sixth lesson)
-7.  [Generalized additive models](https://bookdown.org/egarpor/PM-UC3M/gam.html) (seventh lesson -- skipped)
+6.  [Nonparametric regression](https://bookdown.org/egarpor/PM-UC3M/npreg.html) (sixth lesson) <!-- 7.  [Generalized additive models](https://bookdown.org/egarpor/PM-UC3M/gam.html) (seventh lesson -- skipped) -->
 
 The **office hours** are **Thursdays from 19:15 to 20:15**, at the classroom in which the lab took place. Make use of them!
 
