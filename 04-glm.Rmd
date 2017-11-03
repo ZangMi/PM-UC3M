@@ -1,0 +1,2 @@
+
+# Generalized linear models {#glm}
