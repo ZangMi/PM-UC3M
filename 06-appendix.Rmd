@@ -19,7 +19,7 @@ If there is any Linux user, kindly follow the corresponding instructions [here](
 2. for running a line or code selection from the script in the *console* (first tab in the lower-right panel in Figure \@ref(fig:rstudio)), you do it with the keyboard shortcut `'Ctrl+Enter'` (Windows and Linux) or `'Cmd+Enter'` (Mac OS X).
 
 ```{r, rstudio, echo = FALSE, fig.pos = 'h!', out.width = '70%', fig.cap = 'Main window of `RStudio`. The red shows the code panel and the yellow shows the console output. Extracted from [here](https://www.rstudio.com/wp-content/uploads/2016/01/rstudio-IDE-cheatsheet.pdf).', cache = TRUE}
-knitr::include_graphics("images/images/RStudio.png")
+knitr::include_graphics("images/figures/RStudio.png")
 ```
 
 # Introduction to `R` {#app-introR}
@@ -321,14 +321,15 @@ Do the following:
 #### More on data frames {-}
 
 ```{r, echo = TRUE, collapse = TRUE, error = TRUE, cache = TRUE}
-# Let's begin importing the iris dataset
-data(iris)
-
-# "names" gives you the variables in the data frame
-names(iris)
+# The iris dataset is already imported in R 
+# (beware: locfit has also an iris dataset, with different names and shorter)
+# data(iris)
 
 # The beginning of the data
 head(iris)
+
+# "names" gives you the variables in the data frame
+names(iris)
 
 # So we can access variables by "$" or as in a matrix
 iris$Sepal.Length[1:10]
