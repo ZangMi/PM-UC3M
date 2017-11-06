@@ -1,6 +1,2 @@
 
-# Linear models III: penalization {#lm-iii}
-
-## Ridge regression
-
-## LASSO
+# Linear models III: shrinkage and Big Data {#lm-iii}

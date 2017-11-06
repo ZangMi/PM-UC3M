@@ -1,3 +1,2 @@
 
-# Linear models II: extensions and model selection {#lm-ii}
-
+# Linear models II: extensions, diagnostics, and model selection {#lm-ii}
