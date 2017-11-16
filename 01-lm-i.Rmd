@@ -640,3 +640,474 @@ Figure \@ref(fig:R2) contains the results of this experiment. As you can see $R^
 The $R^2_\text{Adj}$ no longer measures the proportion of variation of $Y$ explained by the regression, but the result of *correcting this proportion by the number of predictors employed*. As a consequence of this, $R^2_\text{Adj}\leq1$ but **it can be negative!**
 ```
 
+## Lab {#lm-i-lab}
+
+### Case study: *The Bordeaux equation* {#lm-i-lab-wine}
+
+#### The story
+
+```{r, video2, echo = FALSE, fig.pos = 'h!', fig.cap = 'ABC interview to Orley Ashenfelter, broadcasted in 1992.', screenshot.opts = list(delay = 15), dev = 'png', cache = TRUE}
+knitr::include_url("https://www.youtube.com/embed/Ec8hPHLMyzY")
+```
+
+> Calculate the winter rain and the harvest rain (in millimeters). Add summer heat in the vineyard (in degrees centigrade). Subtract 12.145. And what do you have? A very, very passionate argument over wine.
+>
+> --- "Wine Equation Puts Some Noses Out of Joint", [The New York Times](http://www.nytimes.com/1990/03/04/us/wine-equation-puts-some-noses-out-of-joint.html), 04/03/1990
+
+This case study is motivated by the study of Princeton professor Orley Ashenfelter [@Ashenfelter1995] on the quality of red Bordeaux vintages. The study became mainstream after disputes with the wine press, especially with Robert Parker, Jr., one of the most influential wine critic in America. See a short review of the story at the [Financial Times](http://www.ft.com/cms/s/0/1e9cb152-5824-11dc-8c65-0000779fd2ac.html) ([Google's cache](https://webcache.googleusercontent.com/search?q=cache:1mRF68v_Uz4J:https://www.ft.com/content/1e9cb152-5824-11dc-8c65-0000779fd2ac)) and at the video in Figure \@ref(fig:video2).
+
+Red Bordeaux wines have been produced in Bordeaux, one of most famous and prolific wine regions in the world, in a very similar way for hundreds of years. However, *the quality of vintages is largely variable* from one season to another due to a long list of random factors, such as the weather conditions. Because Bordeaux wines taste better when they are older (young wines are astringent, when the wines age they lose their astringency), there is an incentive to store the young wines until they are mature. Due to the important difference in taste, it is hard to determine the quality of the wine when it is so young just by tasting it, because it is going to change substantially when the aged wine is in the market. Therefore, being able to *predict the quality of a vintage* is a valuable information for investing resources, for determining a fair price for vintages and for understanding what factors are affecting the wine quality. The purpose of this case study is to answer:
+
+- Q1. *Can we predict the quality of a vintage effectively?*
+- Q2. *What is the interpretation of such prediction?*
+
+The `wine.csv` file ([download](https://raw.githubusercontent.com/egarpor/PM-UC3M/master/datasets/wine.csv)) contains 27 red Bordeaux vintages. The data is the originally employed by @Ashenfelter1995, except for the inclusion of the variable `Year`, the exclusion of `NA`s and the reference price used for the wine. The original source is [here](http://www.liquidasset.com/winedata.html). Each row has the following variables:
+
+- `Year`: year in which grapes were harvested to make wine.
+- `Price`: *logarithm* of the average market price for Bordeaux vintages according to 1990--1991 auctions. The price is relative to the price of the 1961 vintage, regarded as the best one ever recorded.
+- `WinterRain`: winter rainfall (in mm).
+- `AGST`: Average Growing Season Temperature (in Celsius degrees).
+- `HarvestRain`: harvest rainfall (in mm).
+- `Age`: age of the wine measured as the number of years stored in a cask.
+- `FrancePop`: population of France at `Year` (in thousands).
+
+The *quality* of the wine is quantified as the `Price`, a clever way of quantifying a qualitative measure. The data is shown in Table \@ref(tab:winetable).
+
+(ref:winetabletitle) First 15 rows of the `wine` dataset.
+
+```{r, winetable, echo = FALSE, out.width = '90%', fig.pos = 'h!', cache = TRUE}
+wine <- read.csv(file = "datasets/wine.csv", header = TRUE)
+knitr::kable(
+  head(wine, 15),
+  booktabs = TRUE,
+  longtable = TRUE,
+  caption = '(ref:winetabletitle)'
+)
+row.names(wine) <- wine$Year
+wine$Year <- NULL
+```
+
+#### Simple linear model
+
+Let's begin by summarizing the information in Table \@ref(tab:winetable). First, we import correctly the dataset into `R`:
+```{r, collapse = TRUE, cache = TRUE, eval = FALSE}
+# Read data
+wine <- read(file = "wine.csv", header = TRUE, sep = ",")
+
+# Set row names to Year
+row.names(wine) <- wine$Year
+wine$Year <- NULL
+```
+
+A quick exploratory analysis adds insights into the structure of the data:
+```{r, collapse = TRUE, cache = TRUE, fig.asp = 1}
+# Numerical
+summary(wine)
+
+# Graphical
+scatterplotMatrix(wine)
+```
+
+Recall that the objective is to **predict** `Price`. Based on the above matrix scatterplot the best we can predict `Price` by a simple linear regression seems to be with `AGST` or `HarvestRain`. Let's see which one yields the larger $R^2$.
+```{r, collapse = TRUE, cache = TRUE}
+# lm has the syntax: lm(formula = response ~ explanatory, data = data)
+# Price ~ AGST
+modAGST <- lm(Price ~ AGST, data = wine)
+
+# The object
+modAGST
+
+# modAGST is indeed a list of objects whose names are
+names(modAGST)
+
+# We can access these elements by $
+# For example
+modAGST$coefficients
+
+# The residuals
+modAGST$residuals
+
+# The fitted values
+modAGST$fitted.values
+
+# Summary of the model
+summary(modAGST)
+
+# Price ~ HarvestRain
+modHarvestRain <- lm(Price ~ HarvestRain, data = wine)
+summary(modHarvestRain)
+```
+
+```{block, type = 'rmdexercise'}
+Complete the analysis by computing the linear models `Price ~ FrancePop`, `Price ~ Age` and `Price ~ WinterRain`. Name them as `modFrancePop`, `modAge` and `modWinterRain`. Check if the intercepts and slopes are significant for the regression.
+```
+```{r, echo = FALSE, cache = TRUE}
+modFrancePop <- lm(Price ~ FrancePop, data = wine)
+modAge <- lm(Price ~ Age, data = wine)
+modWinterRain <- lm(Price ~ WinterRain, data = wine)
+```
+
+If we do the simple regressions of `Price` on the remaining predictors, we obtain a table like this for the $R^2$:
+
+| Predictor | $R^2$ |
+|:----------|:------|
+|`AGST`| $0.4456$ |
+|`HarvestRain`| $0.2572$ |
+|`FrancePop`| $0.2314$ |
+|`Age`| $0.2120$ |
+|`WinterRain`| $0.0181$ |
+
+#### Multiple linear model
+
+A natural step now is to extend these simple regressions to increase both the $R^2$ and the prediction accuracy for `Price` by means of the **multiple linear regression**:
+```{r, collapse = TRUE, cache = TRUE}
+modWine1 <- lm(Price ~ Age + AGST + FrancePop + HarvestRain + WinterRain, data = wine)
+modWine1
+```
+Note the **use of `+` for including all the predictors**. This does *not* mean that they are all summed and then the regression is done on the sum!^[If you wanted to do so, you will need the function `I()` for indicating that `+` is not including predictors in the model, but is acting as a sum operator: `Price ~ I(Age + AGST + FrancePop + HarvestRain + WinterRain)`.]. Instead of, this notation is designed to **resemble the multiple linear model**:
+\begin{align*}
+Y=\beta_0+\beta_1X_1+\beta_2X_2+\ldots+\beta_pX_p+\varepsilon
+\end{align*}
+A shortcut for regressing a variable on the rest is to use a `.` for the predictor:
+```{r, collapse = TRUE, cache = TRUE}
+lm(Price ~ ., data = wine) # Same as before
+```
+We can get the summary of the model:
+```{r, collapse = TRUE, cache = TRUE}
+summary(modWine1)
+```
+The fitted regression is `Price` $= -2.343 + 0.013\,\times$ `Age` $+ 0.614\,\times$ `AGST` $- 0.000\,\times$ `FrancePop` $- 0.003\,\times$ `HarvestRain` $+ 0.001\,\times$ `WinterRain`. Recall that the `'Multiple R-squared'` has almost doubled with respect to the best simple linear regression! This tells us that we can explain up to $82.75\%$ of the `Price` variability by the predictors.
+
+##### Coefficients significance and ANOVA
+
+The `Coefficients` block of the output of `summary` contains the next elements regarding the significance of each coefficient, this is, the test $H_0:\beta_j=0$ vs $H_1:\beta_j\neq0$:
+
+- `Estimate`: least squares estimate $\hat\beta_j$.
+- `Std. Error`: estimated standard error $\hat{\mathrm{SE}}(\hat\beta_j)$.
+- `t value`: $t$-statistic $\frac{\hat\beta_j}{\hat{\mathrm{SE}}(\hat\beta_j)}$.
+- `Pr(>|t|)`: $p$-value of the $t$-test.
+- `Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1`: codes indicating the size of the $p$-value. The more stars, the more evidence supporting that $H_0$ does not hold.
+
+Note then that **many predictors are not significant** for the regression: `FrancePop`, `Age` and the intercept are not significant. This is an indication of an **excess of predictors** adding little information to the response. Note the almost perfect correlation between `FrancePop` and `Age` shown before: one of them is not adding any extra information to explain `Price`. This complicates the model unnecessarily and, more importantly, it has the undesirable effect of making the **coefficient estimates less precise**. We opt to remove the predictor `FrancePop` from the model since it is exogenous to the wine context^[Notice this is a context-guided decision, not data-driven.].
+
+Then, the model without `FrancePop` (notice the use of `-` for *excluding* a particular predictor) is
+```{r, collapse = TRUE, cache = TRUE}
+modWine2 <- lm(Price ~ . - FrancePop, data = wine)
+summary(modWine2)
+```
+All the coefficients are significant at level $\alpha=0.05$. Therefore, there is no clear redundant information. In addition, the $R^2$ is very similar to the full model, but the `'Adjusted R-squared'`, a weighting of the $R^2$ to account for the number of predictors used by the model, is slightly larger. Hence, this means that, comparatively to the number of predictors used, `modWine2` explains more variability of `Price` than `modWine1`
+
+A handy way of comparing the coefficients of both models is `compareCoefs`:
+```{r, collapse = TRUE, cache = TRUE}
+compareCoefs(modWine1, modWine2)
+```
+Note how **the coefficients for `modWine2` have smaller errors than `modWine1`**.
+
+```{r, collapse = TRUE, cache = TRUE}
+# ANOVA table - warning this is now what we saw in lessons
+anova(modWine1)
+
+# Simplified table
+simpleAnova(modWine1)
+simpleAnova(modWine2)
+```
+
+##### Confidence intervals
+
+Let's see how we can compute the CIs. We analyse the CI for the coefficients of a different model, `Price ~ Age + WinterRain`.
+```{r, collapse = TRUE, cache = TRUE}
+# Fit model
+modWine3 <- lm(Price ~ Age + WinterRain, data = wine)
+summary(modWine3)
+
+# Confidence intervals at 95%
+confint(modWine3)
+
+# Confidence intervals at other levels
+confint(modWine3, level = 0.90)
+confint(modWine3, level = 0.99)
+
+# Compare with previous models
+confint(modWine1)
+confint(modWine2)
+confint(modWine3)
+```
+In this example, the 95% confidence interval for $\beta_0$ is $(4.7460, 7.2201)$, for $\beta_1$ is $(0.0077, 0.0644)$ and for $\beta_2$ is $(-0.0010, 0.0026)$. Therefore, we can say with a 95% confidence that *the coefficient of* `WinterRain` *is non significant*. But we saw in the previous section that it *was significant* in the model `Price ~ Age + AGST + HarvestRain + WinterRain`! How is this possible? The answer is that the presence of extra predictors affects the coefficient estimate, as we saw in Figure \@ref(fig:multmarg). Therefore, the precise statement to make is: **in the model `Price ~ Age + WinterRain`**, with $\alpha=0.05$, the coefficient of `WinterRain` is non significant. Note that this **does not** mean that it will be always non significant: in `Price ~ Age + AGST + HarvestRain + WinterRain` it is.
+
+```{block, type = 'rmdexercise'}
+Compute and interpret the CIs for the coefficients, at levels $\alpha=0.10,0.05,0.01$, for the following regressions:
+
+- `Price ~ WinterRain + HarvestRain + AGST` (`wine`)
+- `AGST ~ Year + FrancePop` (`wine`)
+```
+
+##### Prediction
+
+The prediction and computation of CIs can be done with the `R` function `predict`. The objects required for `predict` are: first, the output of `lm`; second, a `data.frame` containing the locations $\mathbf{x}=(x_1,\ldots,x_p)$ where we want to predict $\beta_0+\beta_1x_1+\ldots+\beta_{k}x_p$. The prediction is $\hat\beta_0+\hat\beta_1x_1+\ldots+\hat\beta_{k}x_p$
+
+```{block, type = 'rmdcaution'}
+It is mandatory to name the columns of the data frame with the same names of the predictors used in `lm`. Otherwise `predict` will generate an error, see below.
+```
+
+```{r, collapse = TRUE, cache = TRUE}
+# Fit a linear model for the price on WinterRain, HarvestRain and AGST
+modWine4 <- lm(Price ~ WinterRain + HarvestRain + AGST, data = wine)
+summary(modWine4)
+
+# Data for which we want a prediction
+# Important! You have to name the column with the predictor name!
+weather <- data.frame(WinterRain = 500, HarvestRain = 123,
+                      AGST = 18)
+
+## Prediction of the mean
+
+# Prediction of the mean at 95% - the defaults
+predict(modWine4, newdata = weather)
+
+# Prediction of the with 95% confidence interval (the default)
+# CI: (lwr, upr)
+predict(modWine4, newdata = weather, interval = "confidence")
+predict(modWine4, newdata = weather, interval = "confidence", level = 0.95)
+
+# Other levels
+predict(modWine4, newdata = weather, interval = "confidence", level = 0.90)
+predict(modWine4, newdata = weather, interval = "confidence", level = 0.99)
+
+## Prediction of the response
+
+# Prediction of the mean at 95% - the defaults
+predict(modWine4, newdata = weather)
+
+# Prediction of the with 95% confidence interval (the default)
+# CI: (lwr, upr)
+predict(modWine4, newdata = weather, interval = "prediction")
+predict(modWine4, newdata = weather, interval = "prediction", level = 0.95)
+
+# Other levels
+predict(modWine4, newdata = weather, interval = "prediction", level = 0.90)
+predict(modWine4, newdata = weather, interval = "prediction", level = 0.99)
+
+# Predictions for several values
+weather2 <- data.frame(WinterRain = c(500, 200), HarvestRain = c(123, 200),
+                       AGST = c(17, 18))
+predict(modWine4, newdata = weather2, interval = "prediction")
+```
+
+```{block, type = 'rmdexercise'}
+For the `wine` dataset, do the following:
+
+- Regress `WinterRain` on `HarvestRain` and `AGST`. Name the fitted model `modExercise`.
+- Compute the estimate for the conditional mean of `WinterRain` for `HarvestRain`$=123.0$ and `AGST`$=16.15$. What is the CI at $\alpha=0.01$?
+- Compute the estimate for the conditional response for `HarvestRain`$=125.0$ and `AGST`$=15$. What is the CI at $\alpha=0.10$?
+- Check that `modExercise$fitted.values` is the same as `predict(modExercise, newdata = data.frame(WinterRain = wine$HarvestRain, AGST = wine$AGST))`. Why is so?
+```
+
+#### Conclusion
+
+As a conclusion, `modWine2` is the model with a largest $R^2_\text{Adj}$. It is a model that explains the $82.75\%$ of the variability in a non-redundant way and with all their coefficients significant. Therefore, we have a formula for effectively explaining and predicting the quality of a vintage (answers Q1).
+
+The interpretation of `modWine2` agrees with well-known facts in viticulture that make perfect sense (Q2):
+
+- Higher temperatures are associated with better quality (higher priced) wine.
+- Rain before the growing season is good for the wine quality, but during harvest is bad.
+- The quality of the wine improves with the age.
+
+Although these were known facts, keep in mind that the model allows to *quantify the effect of each variable on the wine quality* and provides us with a precise way of *predicting the quality of future vintages*.
+
+<!-- ### Exercises -->
+
+<!-- #### Check coefficients formulae with `R`'s `lm` -->
+
+<!-- ```{r, echo = FALSE} -->
+<!-- wine <- read.csv(file = "datasets/wine.csv", header = TRUE) -->
+<!-- ``` -->
+
+<!-- The data of the figure has been generated with the following code: -->
+<!-- ```{r, cache = TRUE} -->
+<!-- # Generates 50 points from a N(0, 1): predictor and error -->
+<!-- set.seed(34567) # Fixes the seed for the random generator -->
+<!-- x <- rnorm(n = 50) -->
+<!-- eps <- rnorm(n = 50) -->
+
+<!-- # Responses -->
+<!-- yLin <- -0.5 + 1.5 * x + eps -->
+<!-- yQua <- -0.5 + 1.5 * x^2 + eps -->
+<!-- yExp <- -0.5 + 1.5 * 2^x + eps -->
+
+<!-- # Data -->
+<!-- leastSquares <- data.frame(x = x, yLin = yLin, yQua = yQua, yExp = yExp) -->
+<!-- ``` -->
+
+<!-- ```{block, type = 'rmdexercise'} -->
+<!-- The minimizers of the error in the above illustration are indeed the coefficients given by the `lm` function. Check this for the three types of responses: `yLin`, `yQua` and `yExp`. -->
+<!-- ``` -->
+
+<!-- To conclude this section, we check that the regression coefficients given by `lm` are indeed the ones given in \@ref(eq:3). -->
+
+<!-- ```{r, echo = TRUE, collapse = TRUE, cache = TRUE} -->
+<!-- # Covariance -->
+<!-- Sxy <- cov(x, yLin) -->
+
+<!-- # Variance -->
+<!-- Sx2 <- var(x) -->
+
+<!-- # Coefficients -->
+<!-- beta1 <- Sxy / Sx2 -->
+<!-- beta0 <- mean(yLin) - beta1 * mean(x) -->
+<!-- c(beta0, beta1) -->
+
+<!-- # Output from lm -->
+<!-- mod <- lm(yLin ~ x, data = leastSquares) -->
+<!-- mod$coefficients -->
+<!-- ``` -->
+
+<!-- The data of the illustration has been generated with the following code: -->
+<!-- ```{r, cache = TRUE} -->
+<!-- # Generates 50 points from a N(0, 1): predictors and error -->
+<!-- set.seed(34567) # Fixes the seed for the random generator -->
+<!-- x1 <- rnorm(50) -->
+<!-- x2 <- rnorm(50) -->
+<!-- x3 <- x1 + rnorm(50, sd = 0.05) # Make variables dependent -->
+<!-- eps <- rnorm(50) -->
+
+<!-- # Responses -->
+<!-- yLin <- -0.5 + 0.5 * x1 + 0.5 * x2 + eps -->
+<!-- yQua <- -0.5 + x1^2 + 0.5 * x2 + eps -->
+<!-- yExp <- -0.5 + 0.5 * exp(x2) + x3 + eps -->
+
+<!-- # Data -->
+<!-- leastSquares3D <- data.frame(x1 = x1, x2 = x2, yLin = yLin, -->
+<!--                              yQua = yQua, yExp = yExp) -->
+<!-- ``` -->
+
+<!-- Let's check that indeed the coefficients given by `lm` are the ones given by equation \@ref(eq:k3) for the regression `yLin ~ x1 + x2`. -->
+<!-- ```{r, echo = TRUE, collapse = TRUE, cache = TRUE} -->
+<!-- # Matrix X -->
+<!-- X <- cbind(1, x1, x2) -->
+
+<!-- # Vector Y -->
+<!-- Y <- yLin -->
+
+<!-- # Coefficients -->
+<!-- beta <- solve(t(X) %*% X) %*% t(X) %*% Y -->
+<!-- # %*% multiplies matrices -->
+<!-- # solve() computes the inverse of a matrix -->
+<!-- # t() transposes a matrix -->
+<!-- beta -->
+
+<!-- # Output from lm -->
+<!-- mod <- lm(yLin ~ x1 + x2, data = leastSquares3D) -->
+<!-- mod$coefficients -->
+<!-- ``` -->
+
+<!-- ```{block2, type = 'rmdexercise'} -->
+<!-- Compute $\boldsymbol{\beta}$ for the regressions `yLin ~ x1 + x2`, `yQua ~ x1 + x2` and `yExp ~ x2 + x3` using: -->
+
+<!-- - equation \@ref(eq:k3) and -->
+<!-- - the function `lm`. -->
+
+<!-- Check that the fitted plane and the coefficient estimates are coherent. -->
+<!-- ``` -->
+
+<!-- The data employed in Figure \@ref(fig:multmarg) is: -->
+<!-- ```{r, echo = TRUE, collapse = TRUE, cache = TRUE} -->
+<!-- set.seed(212542) -->
+<!-- n <- 100 -->
+<!-- x1 <- rnorm(n, sd = 2) -->
+<!-- x2 <- rnorm(n, mean = x1, sd = 3) -->
+<!-- y <- 1 + 2 * x1 - x2 + rnorm(n, sd = 1) -->
+<!-- data <- data.frame(x1 = x1, x2 = x2, y = y) -->
+<!-- ``` -->
+
+<!-- ```{block, type = 'rmdexercise'} -->
+<!-- With the above `data`, cheek how the fitted coefficients change for `y ~ x1`, `y ~ x2` and `y ~ x1 + x2`. -->
+<!-- ``` -->
+
+<!-- #### Visual assesment of assumptions -->
+
+<!-- ```{block, type = 'rmdexercise'} -->
+<!-- The dataset `assumptions.RData` ([download](https://raw.githubusercontent.com/egarpor/PM-UC3M/master/datasets/assumptions.RData)) contains the variables `x1`, ..., `x9` and `y1`, ..., `y9`. For each regression `y1 ~ x1`, ..., `y9 ~ x9`: -->
+
+<!-- - Check whether the assumptions of the linear model are being satisfied (make a scatterplot with a regression line). -->
+<!-- - State which assumption(s) are violated and justify your answer. -->
+<!-- ``` -->
+
+<!-- An example of a simulated dataset considered in the experiment of Figure \@ref(fig:R2): -->
+<!-- ```{r, eval = FALSE, cache = TRUE} -->
+<!-- # Generate data -->
+<!-- k <- 198 -->
+<!-- n <- 200 -->
+<!-- set.seed(3456732) -->
+<!-- beta <- c(0.5, -0.5, rep(0, k - 2)) -->
+<!-- X <- matrix(rnorm(n * k), nrow = n, ncol = k) -->
+<!-- Y <- drop(X %*% beta + rnorm(n, sd = 3)) -->
+<!-- data <- data.frame(y = Y, x = X) -->
+
+<!-- # Regression on the two meaningful predictors -->
+<!-- summary(lm(y ~ x.1 + x.2, data = data)) -->
+
+<!-- # Adding 20 garbage variables -->
+<!-- summary(lm(y ~ X[, 1:22], data = data)) -->
+<!-- ``` -->
+
+<!-- The next code illustrates a situation where we have two predictors completely independent from the response. The fitted model has a negative $R^2_\text{Adj}$. -->
+<!-- ```{r, collapse = TRUE, cache = TRUE} -->
+<!-- # Three independent variables -->
+<!-- set.seed(234599) -->
+<!-- x1 <- rnorm(100) -->
+<!-- x2 <- rnorm(100) -->
+<!-- y <- 1 + rnorm(100) -->
+
+<!-- # Negative adjusted R^2 -->
+<!-- summary(lm(y ~ x1 + x2)) -->
+<!-- ``` -->
+
+<!-- ```{block, type = 'rmdexercise'} -->
+<!-- Construct more predictors (`x3`, `x4`, ...) by sampling 100 points from a normal (`rnorm(100)`). Check that when the predictors are added to the model, the $R^2_\text{Adj}$ decreases and the $R^2$ increases. -->
+<!-- ``` -->
+
+
+<!-- ```{block, type = 'rmdexercise'} -->
+<!-- Compute the ANOVA table for the regression `Price ~ WinterRain + AGST + HarvestRain + Age` in the `wine` dataset. Check that the $p$-value for the $F$-test given in `summary` and by `simpleAnova` are the same. -->
+<!-- ``` -->
+
+
+<!-- ```{block, type = 'rmdexercise'} -->
+<!-- For the `assumptions` dataset, do the next: -->
+
+<!-- - Regression `y7 ~ x7`. Check that: -->
+<!--     - The intercept of  is not significant for the regression at any reasonable level $\alpha$. -->
+<!--     - The slope is significant for any $\alpha>10^{-7}$. -->
+
+<!-- - Regression `y6 ~ x6`. Assume the linear model assumptions are verified. -->
+<!--     - Check that $\hat\beta_0$ is significantly different from zero at any level -->
+<!-- $\alpha$. -->
+<!--     - For which $\alpha=0.10,0.05,0.01$ is $\hat\beta_1$ significantly different from zero? -->
+<!-- ```   -->
+
+
+<!-- ```{block, type = 'rmdexercise'} -->
+<!-- For the `assumptions` dataset, do the next: -->
+
+<!-- - Regression `y7 ~ x7`. Check that: -->
+<!--     - The intercept of  is not significant for the regression at any reasonable level $\alpha$. -->
+<!--     - The slope is significant for any $\alpha>10^{-7}$. -->
+
+<!-- - Regression `y6 ~ x6`. Assume the linear model assumptions are verified. -->
+<!--     - Check that $\hat\beta_0$ is significantly different from zero at any level -->
+<!-- $\alpha$. -->
+<!--     - For which $\alpha=0.10,0.05,0.01$ is $\hat\beta_1$ significantly different from zero? -->
+<!-- ```   -->
+
+<!-- ```{block, type = 'rmdexercise'} -->
+<!-- Re-analyse the significance of the coefficients in `Seats2013.2023 ~ Population2010` and `Seats2011 ~ Population2010` for the `US` and `EU` datasets, respectively. -->
+<!-- ``` -->
+
+<!-- #### Prediction -->
+
+<!-- The prediction and computation of CIs can be done with the `R` function `predict`. The objects required for `predict` are: first, the output of `lm`; second, a `data.frame` containing the locations $\mathbf{x}=(x_1,\ldots,x_p)$ where we want to predict $\beta_0+\beta_1x_1+\ldots+\beta_{k}x_p$. The prediction is $\hat\beta_0+\hat\beta_1x_1+\ldots+\hat\beta_{k}x_p$ -->
+
+<!-- ```{block, type = 'rmdcaution'} -->
+<!-- It is mandatory to name the columns of the data frame with the same names of the predictors used in `lm`. Otherwise `predict` will generate an error, see below. -->
+<!-- ``` -->
+
