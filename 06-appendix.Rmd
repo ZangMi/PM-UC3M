@@ -776,3 +776,24 @@ Do the following:
 - Create a function that simulates $N$ samples from the distribution of $\max(X_1,\ldots,X_n)$ where $X_1,\ldots,X_n$ are iid $\mathcal{U}(0,1)$.
 
 ```
+
+# Review on hypothesis testing {#app-ht}
+
+The process of hypothesis testing has an interesting analogy with a trial that helps on understanding the elements present in a formal hypothesis test in an intuitive way.
+
+|         Hypothesis testing       |                      Trial                        |
+|:---------------------------------|:--------------------------------------------------|
+| Null hypothesis $H_0$ | **Accused of comitting a crime**. It has the "presumption of innocence", which means that it is *not guilty* until there is enough evidence to supporting its guilt |
+| Sample $X_1,\ldots,X_n$ | Collection of small **evidences supporting innocence and guilt**. These evidences contain a certain degree of uncontrollable randomness because of how they were collected and the context regarding the case  |
+| Statistic $T_n$ | **Summary of the evicences presented** by the prosecutor and defense lawyer   |
+| Distribution of $T_n$ under $H_0$ | The **judge** conducting the trial. Evaluates the evidence presented by both sides and presents a verdict for $H_0$  |
+| Significance level $\alpha$ | $1-\alpha$ is the **strength of evidences required by the judge for condemning $H_0$**. The judge allows evidences that on average condemn $100\alpha\%$ of the innocents, due to the randomness inherent to the evidence collection process. $\alpha=0.05$ is considered a reasonable level |
+| $p$-value | **Decision** of the judge that measures the degree of compatibility, in a scale $0$--$1$, of the presumption of innocence with the summary of the evidences presented. If $p$-value$<\alpha$, $H_0$ is declared guilty. Otherwise, is declared not guilty |
+| $H_0$ is rejected | $H_0$ is declared guilty: there are **strong evidences supporting its guilt** |
+| $H_0$ is not rejected | $H_0$ is declared not guilty: either is **innocent or there are no enough evidences supporting its guilt** |
+
+More formally, the $p$-value of an hypothesis test about $H0$ is defined as:
+
+> The $p$-value is the probability of obtaining a statistic more unfavourable to $H_0$ than the observed, assuming that $H_0$ is true.
+
+Therefore, **if the $p$-value is small** (smaller than the chosen level $\alpha$), **it is unlikely that the evidence against $H_0$ is due to randomness. As a consequence, $H_0$ is rejected**. If the $p$-value is large (larger than $\alpha$), then it is more possible that the evidences against $H_0$ are merely due to the randomness of the data. In this case, we do not reject $H_0$.

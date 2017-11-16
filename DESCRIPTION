@@ -7,12 +7,10 @@ Depends:
     R (>= 3.1.0),
     MASS,
     caret,
-    RcmdrMisc,
     car,
     rgl,
     ks,
     KernSmooth,
-    locfit,
-    nor1mix
+    locfit
 Imports: bookdown
 Remotes: rstudio/bookdown
