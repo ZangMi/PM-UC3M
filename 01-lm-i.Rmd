@@ -109,14 +109,14 @@ knitr::include_app('https://ec2-35-177-34-200.eu-west-2.compute.amazonaws.com/le
 
 The estimation of $\beta_0,\beta_1,\ldots,\beta_p$ is done as in simple linear regression, by minimizing the RSS. First we need to introduce some helpful matrix notation:
 
-- A sample of $(X_1,\ldots,X_p,Y)$ is $(X_{11},\ldots,X_{1k},Y_1),\ldots,(X_{n1},\ldots,X_{nk},Y_n)$, where $X_{ij}$ denotes the $i$-th observation of the $j$-th predictor $X_j$. We denote with $\mathbf{X}_i:=(X_{i1},\ldots,X_{ip})$ to the $i$-th observation of $(X_1,\ldots,X_p)$, so the sample simplifies to $(\mathbf{X}_{1},Y_1),\ldots,(\mathbf{X}_{n},Y_n)$.
+- A sample of $(X_1,\ldots,X_p,Y)$ is $(X_{11},\ldots,X_{1p},Y_1),\ldots,(X_{n1},\ldots,X_{np},Y_n)$, where $X_{ij}$ denotes the $i$-th observation of the $j$-th predictor $X_j$. We denote with $\mathbf{X}_i:=(X_{i1},\ldots,X_{ip})$ to the $i$-th observation of $(X_1,\ldots,X_p)$, so the sample simplifies to $(\mathbf{X}_{1},Y_1),\ldots,(\mathbf{X}_{n},Y_n)$.
 
 - The *design matrix* contains all the information of the predictors and a column of ones
 \[
 \mathbf{X}:=\begin{pmatrix}
-1 & X_{11} & \cdots & X_{1k}\\
+1 & X_{11} & \cdots & X_{1p}\\
 \vdots & \vdots & \ddots & \vdots\\
-1 & X_{n1} & \cdots & X_{nk}
+1 & X_{n1} & \cdots & X_{np}
 \end{pmatrix}_{n\times(p+1)}.
 \]
 
@@ -241,7 +241,7 @@ Y_i|(X_{i1}=x_{i1},\ldots,X_{ip}=x_{ip})\sim \mathcal{N}(\beta_0+\beta_1x_{i1}+\
 \end{align}
 with $Y_1,\ldots,Y_n$ being independent conditionally on the sample of predictors. Equivalently stated in a compact matrix way, the assumptions of the model on the sample are:
 \begin{align}
-\mathbf{Y}|\mathbf{X}\sim\mathcal{N}_n(\mathbf{X}\boldsymbol{\beta},\sigma^2).(\#eq:sampcond2)
+\mathbf{Y}|\mathbf{X}\sim\mathcal{N}_n(\mathbf{X}\boldsymbol{\beta},\sigma^2\mathbf{I}).(\#eq:sampcond2)
 \end{align}
 
 ```{block2, type = 'rmdinsight'}
@@ -286,18 +286,18 @@ The distribution of $\hat{\boldsymbol{\beta}}$ is:
 \end{align}
 This result can be obtained from the form of $\hat{\boldsymbol{\beta}}$ given in  \@ref(eq:k3) and the sample version of the model assumptions given in \@ref(eq:sampcond2). Equation \@ref(eq:normp) implies that each *individual* $\hat\beta_j$ satisfies
 \begin{align}
-\hat{\beta}_j\sim\mathcal{N}\left(\beta_j,\mathrm{SE}(\hat\beta_j)^2\right),(\#eq:normp1)
+\hat{\beta}_j\sim\mathcal{N}\left(\beta_j,\mathrm{SE}(\hat\beta_j)^2\right),(\#eq:normp1b)
 \end{align}
-where
+where $\mathrm{SE}(\hat\beta_j)$ is the *standard error*, $\mathrm{SE}(\hat\beta_j)^2=\sigma^2v_j$, and
 \[
 v_j\text{ is the }j\text{-th element of the diagonal of }(\mathbf{X}'\mathbf{X})^{-1}.
 \]
-Recall that an equivalent form for \@ref(eq:norm1) is (why?)
-\begin{align}
-\frac{\hat\beta_j-\beta_j}{\mathrm{SE}(\hat\beta_j)}\sim\mathcal{N}(0,1).(\#eq:normp1b)
-\end{align}
+Recall that an equivalent form for \@ref(eq:normp1b) is (why?)
+\begin{align*}
+\frac{\hat\beta_j-\beta_j}{\mathrm{SE}(\hat\beta_j)}\sim\mathcal{N}(0,1).
+\end{align*}
 
-The interpretation of \@ref(eq:normp1) is simpler in the case with $p=1$, where
+The interpretation of \@ref(eq:normp1b) is simpler in the case with $p=1$, where
 \begin{align}
 \hat\beta_0\sim\mathcal{N}\left(\beta_0,\mathrm{SE}(\hat\beta_0)^2\right),\quad\hat\beta_1\sim\mathcal{N}\left(\beta_1,\mathrm{SE}(\hat\beta_1)^2\right)(\#eq:norm1)
 \end{align}
@@ -417,8 +417,8 @@ The unilateral test $H_0:\beta_j\geq 0$ (respectively, $H_0:\beta_j\leq 0$) vs $
 
 The forecast of $Y$ from $\mathbf{X}=\mathbf{x}$ (this is, $X_1=x_1,\ldots,X_p=x_p$) is approached by two different ways:
 
-1. Inference on the **conditional mean** of $Y$ given $\mathbf{X}=\mathbf{x}$, $\mathbb{E}[Y|\mathbf{X}=\mathbf{x}]$. This is a deterministic quantity, which equals $\beta_0+\beta_1x_1+\ldots+\beta_{k}x_p$.
-2. Prediction of the **conditional response** $Y|\mathbf{X}=\mathbf{x}$. This is a random variable distributed as $\mathcal{N}(\beta_0+\beta_1x_1+\ldots+\beta_{k}x_p,\sigma^2)$.
+1. Inference on the **conditional mean** of $Y$ given $\mathbf{X}=\mathbf{x}$, $\mathbb{E}[Y|\mathbf{X}=\mathbf{x}]$. This is a deterministic quantity, which equals $\beta_0+\beta_1x_1+\ldots+\beta_{p}x_p$.
+2. Prediction of the **conditional response** $Y|\mathbf{X}=\mathbf{x}$. This is a random variable distributed as $\mathcal{N}(\beta_0+\beta_1x_1+\ldots+\beta_{p}x_p,\sigma^2)$.
 
 Similarities and differences in the prediction of the conditional mean $\mathbb{E}[Y|\mathbf{X}=\mathbf{x}]$ and conditional response $Y|\mathbf{X}=\mathbf{x}$:
 
@@ -478,7 +478,7 @@ The ANOVA table summarizes the decomposition of the variance.
 
 |     | Degrees of freedom | Sum Squares | Mean Squares | $F$-value | $p$-value |
 |-----|------------|--------|---------|----------------|----------------|
-| Predictors | $p$ | SSR | $\frac{\text{SSR}}{k}$ | $\frac{\text{SSR}/p}{\text{SSE}/(n-p-1)}$ | $p$ |
+| Predictors | $p$ | SSR | $\frac{\text{SSR}}{p}$ | $\frac{\text{SSR}/p}{\text{SSE}/(n-p-1)}$ | $p$ |
 | Residuals | $n-p-1$ | SSE | $\frac{\text{SSE}}{n-p-1}$ | | |
 
 The "$F$-value" of the ANOVA table represents the value of the $F$-statistic $\frac{\text{SSR}/p}{\text{SSE}/(n-p-1)}$. This statistic is employed to test
@@ -487,9 +487,9 @@ H_0:\beta_1=\ldots=\beta_p=0\quad\text{vs.}\quad H_1:\beta_j\neq 0\text{ for any
 \end{align*}
 that is, the hypothesis of *no linear dependence of $Y$ on $X_1,\ldots,X_p$* (the plane is completely flat, with no inclination). If $H_0$ is rejected, it means that *at least one $\beta_j$ is significantly different from zero*. It happens that
 \begin{align*}
-F=\frac{\text{SSR}/p}{\text{SSE}/(n-p-1)}\stackrel{H_0}{\sim} F_{k,n-p-1},
+F=\frac{\text{SSR}/p}{\text{SSE}/(n-p-1)}\stackrel{H_0}{\sim} F_{p,n-p-1},
 \end{align*}
-where $F_{k,n-p-1}$ is the *Snedecor's $F$ distribution* with $p$ and $n-p-1$ degrees of freedom. If $H_0$ is true, then $F$ is expected to be *small* since SSR will be close to zero (little variation is explained by the regression model since $\hat{\boldsymbol{\beta}}\approx\mathbf{0}$).
+where $F_{p,n-p-1}$ is the *Snedecor's $F$ distribution* with $p$ and $n-p-1$ degrees of freedom. If $H_0$ is true, then $F$ is expected to be *small* since SSR will be close to zero (little variation is explained by the regression model since $\hat{\boldsymbol{\beta}}\approx\mathbf{0}$).
 
 ```{block, type = 'rmdcaution'}
 The "ANOVA table" is a broad concept in statistics, with different variants. Here we are only covering the basic ANOVA table from the relation $\text{SST} = \text{SSR} + \text{SSE}$. However, further sophistications are possible when $\text{SSR}$ is decomposed into the variations contributed by *each* predictor. In particular, for multiple linear regression `R`'s `anova` implements a *sequential (type I) ANOVA table*, which is **not** the previous table!
@@ -503,7 +503,7 @@ The `anova` function in `R` takes a model as an input and returns the following 
 | Predictor 2| $1$ | SSR$_2$ | $\frac{\text{SSR}_2}{1}$ | $\frac{\text{SSR}_2/1}{\text{SSE}/(n-p-1)}$ | $p_2$ |
 | $\vdots$| $\vdots$ | $\vdots$ | $\vdots$ | $\vdots$ | $\vdots$ |
 | Predictor $p$| $1$ | SSR$_p$ | $\frac{\text{SSR}_p}{1}$ | $\frac{\text{SSR}_p/1}{\text{SSE}/(n-p-1)}$ | $p_p$ |
-| Residuals | $n - k - 1$ | SSE | $\frac{\text{SSE}}{n-p-1}$ | | |
+| Residuals | $n - p - 1$ | SSE | $\frac{\text{SSE}}{n-p-1}$ | | |
 
 Here the SSR$_j$ represents the regression sum of squares associated to the inclusion of $X_j$ in the model with predictors $X_1,\ldots,X_{j-1}$, this is:
 \[
@@ -843,7 +843,7 @@ Compute and interpret the CIs for the coefficients, at levels $\alpha=0.10,0.05,
 
 ##### Prediction
 
-The prediction and computation of CIs can be done with the `R` function `predict`. The objects required for `predict` are: first, the output of `lm`; second, a `data.frame` containing the locations $\mathbf{x}=(x_1,\ldots,x_p)$ where we want to predict $\beta_0+\beta_1x_1+\ldots+\beta_{k}x_p$. The prediction is $\hat\beta_0+\hat\beta_1x_1+\ldots+\hat\beta_{k}x_p$
+The prediction and computation of CIs can be done with the `R` function `predict`. The objects required for `predict` are: first, the output of `lm`; second, a `data.frame` containing the locations $\mathbf{x}=(x_1,\ldots,x_p)$ where we want to predict $\beta_0+\beta_1x_1+\ldots+\beta_{p}x_p$. The prediction is $\hat\beta_0+\hat\beta_1x_1+\ldots+\hat\beta_{p}x_p$
 
 ```{block, type = 'rmdcaution'}
 It is mandatory to name the columns of the data frame with the same names of the predictors used in `lm`. Otherwise `predict` will generate an error, see below.
@@ -1035,11 +1035,11 @@ Although these were known facts, keep in mind that the model allows to *quantify
 <!-- An example of a simulated dataset considered in the experiment of Figure \@ref(fig:R2): -->
 <!-- ```{r, eval = FALSE, cache = TRUE} -->
 <!-- # Generate data -->
-<!-- k <- 198 -->
+<!-- p <- 198 -->
 <!-- n <- 200 -->
 <!-- set.seed(3456732) -->
-<!-- beta <- c(0.5, -0.5, rep(0, k - 2)) -->
-<!-- X <- matrix(rnorm(n * k), nrow = n, ncol = k) -->
+<!-- beta <- c(0.5, -0.5, rep(0, p - 2)) -->
+<!-- X <- matrix(rnorm(n * p), nrow = n, ncol = p) -->
 <!-- Y <- drop(X %*% beta + rnorm(n, sd = 3)) -->
 <!-- data <- data.frame(y = Y, x = X) -->
 
@@ -1105,7 +1105,7 @@ Although these were known facts, keep in mind that the model allows to *quantify
 
 <!-- #### Prediction -->
 
-<!-- The prediction and computation of CIs can be done with the `R` function `predict`. The objects required for `predict` are: first, the output of `lm`; second, a `data.frame` containing the locations $\mathbf{x}=(x_1,\ldots,x_p)$ where we want to predict $\beta_0+\beta_1x_1+\ldots+\beta_{k}x_p$. The prediction is $\hat\beta_0+\hat\beta_1x_1+\ldots+\hat\beta_{k}x_p$ -->
+<!-- The prediction and computation of CIs can be done with the `R` function `predict`. The objects required for `predict` are: first, the output of `lm`; second, a `data.frame` containing the locations $\mathbf{x}=(x_1,\ldots,x_p)$ where we want to predict $\beta_0+\beta_1x_1+\ldots+\beta_{p}x_p$. The prediction is $\hat\beta_0+\hat\beta_1x_1+\ldots+\hat\beta_{p}x_p$ -->
 
 <!-- ```{block, type = 'rmdcaution'} -->
 <!-- It is mandatory to name the columns of the data frame with the same names of the predictors used in `lm`. Otherwise `predict` will generate an error, see below. -->

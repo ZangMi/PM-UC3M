@@ -39,7 +39,7 @@ The **Shiny interactive apps** on the notes can be downloaded and run locally. T
 The required packages for the course are (list to be updated):
 ```{r, echo = TRUE, cache = TRUE, warning = FALSE, message = FALSE, eval = FALSE}
 # Install packages
-install.packages(c("car"))
+install.packages(c("car"))#, "caret", "rgl", "lars", "KernSmooth", "locfit"))
 ```
 
 The codes in the notes may assume that the packages have been loaded, so it is better to do it now:
