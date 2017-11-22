@@ -60,9 +60,9 @@ dev.off()
 
 # Comparison
 library(RcmdrMisc)
-mod1 <- stepwise(lm(y ~ ., data = data))
-mod2 <- stepwise(lm(y ~ ., data = data), "backward")
-mod3 <- stepwise(lm(y ~ ., data = data), "forward")
+mod1 <- stepAIC(lm(y ~ ., data = data))
+mod2 <- stepAIC(lm(y ~ ., data = data), "backward")
+mod3 <- stepAIC(lm(y ~ ., data = data), "forward")
 summary(mod1)
 summary(mod2)
 summary(mod3)
