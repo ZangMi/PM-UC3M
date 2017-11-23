@@ -2,7 +2,7 @@
 title: "Notes for Predictive Modeling"
 subtitle: "MSc in Big Data Analytics at Carlos III University of Madrid"
 author: "Eduardo García Portugués"
-date: "`r Sys.Date()`, v1.5"
+date: "`r Sys.Date()`, v2.0"
 knit: "bookdown::render_book"
 documentclass: book
 bibliography: PM-UC3M.bib
@@ -32,7 +32,7 @@ The **animations** of these notes will not be displayed the first time they are 
 Welcome to the notes for *Predictive Modeling*. These notes contain both the theory and practice for the statistical methods presented in the course. The emphasis is placed in building intuition behind the methods, gaining insights into their properties, and showing their application through the use of statistical software. The topics we will cover are an in-depth analysis of **linear models** ([I](https://bookdown.org/egarpor/PM-UC3M/lm-i.html), [II](https://bookdown.org/egarpor/PM-UC3M/lm-ii.html), and [III](https://bookdown.org/egarpor/PM-UC3M/lm-iii.html)), their extension to
 [**generalized linear models**](https://bookdown.org/egarpor/PM-UC3M/glm.html), and an introduction to [**nonparametric regression**](https://bookdown.org/egarpor/PM-UC3M/npreg.html).
 
-The notes contain a substantial amount of snippets of code that are fully self-contained within the section in which they are included. This allows to see how the methods and theory translate neatly to the practice. The **software** employed in the course is *the* statistical language [`R`](https://cran.r-project.org/) and its most common IDE (Integrated Development Environment) nowadays, [`RStudio`](https://www.rstudio.com/products/rstudio/download/). A basic prior knowledge of both is assumed^[Among others: basic programming in `R`, ability to work with objects and data structures, ability to produce graphics, knowledge of the main statistical functions, and ability to run scripts in `RStudio`.]. The appendix presents some basic introductions to `RStudio` and `R` for those students lacking basic expertise on them.
+The notes contain a substantial amount of snippets of code that are fully self-contained within the chapter in which they are included. This allows to see how the methods and theory translate neatly to the practice. The **software** employed in the course is *the* statistical language [`R`](https://cran.r-project.org/) and its most common IDE (Integrated Development Environment) nowadays, [`RStudio`](https://www.rstudio.com/products/rstudio/download/). A basic prior knowledge of both is assumed^[Among others: basic programming in `R`, ability to work with objects and data structures, ability to produce graphics, knowledge of the main statistical functions, and ability to run scripts in `RStudio`.]. The appendix presents some basic introductions to `RStudio` and `R` for those students lacking basic expertise on them.
 
 The **Shiny interactive apps** on the notes can be downloaded and run locally, which allows in particular to examine their codes. Check [this GitHub repository](https://github.com/egarpor/ShinyServer) for the sources.
 
@@ -185,9 +185,9 @@ This is a (constantly updated) handy list of all the relevant datasets used in t
 Several great reference books have been used for preparing these notes. The following list details the sections in which each of them has been consulted (*note: list to be updated*):
 
 - @Kuhn2013 <!-- (Sections \@ref(intro-data-splitting), \@ref(intro-what-is)) -->
-- @James2013 <!-- (Sections \@ref(lm-i-model) -- \@ref(lm-i-modfit), \@ref(lm-i-lab-boston)) -->
+- @James2013 <!-- (Sections \@ref(lm-i-model) - \@ref(lm-i-modfit), \@ref(lm-ii-lab-boston)) -->
 - @Fan1996 <!-- (Sections \@ref(reg-kre), \@ref(reg-asymp), \@ref(reg-bwd)). -->
-- @Pena2002 <!--(Sections \@ref(lm-i-model) -- \@ref(lm-i-modfit)) -->
+- @Pena2002 <!--(Sections \@ref(lm-i-model) - \@ref(lm-i-modfit)) -->
 - @Loader1999 <!-- (Section \@ref(reg-loclik)). -->
 - @Wand1995 <!-- (Sections \@ref(reg-loclik)). -->
 - @Wasserman2004 <!-- (Sections \@ref(reg-param), \@ref(reg-loclik)). -->
