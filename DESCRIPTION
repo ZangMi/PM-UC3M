@@ -10,7 +10,6 @@ Depends:
     car,
     rgl,
     ks,
-    KernSmooth,
-    locfit
+    KernSmooth
 Imports: bookdown
 Remotes: rstudio/bookdown
