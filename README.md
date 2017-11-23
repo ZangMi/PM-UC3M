@@ -94,7 +94,7 @@ Need extra time? Buy it at expenses of a penalization in your grade: `-0.04` poi
 
 ### Project presentations
 
-The **30th of January, from 09:00 to 21:00 in room 0.B.08**, each group must present one of the four projects. The project to be presented is randomly selected. On the 25th of January, a list with the selected reports and presentation schedule will be made public, so you know at which time you have to present. Restrictions, if any, must be communicated and justified in advance. The presentation will determine the `individual_presentation_grade`.
+The **30th of January, from 09:00 to 21:00 in room 0.B.08**, each group must present one of the two projects. The project to be presented is randomly selected. On the 25th of January, a list with the selected reports and presentation schedule will be made public, so you know at which time you have to present. Restrictions, if any, must be communicated and justified in advance. The presentation will determine the `individual_presentation_grade`.
 
 The evaluation will be carried out as follows:
 
