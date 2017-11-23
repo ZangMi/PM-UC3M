@@ -848,7 +848,7 @@ For the `wine` dataset, do the following:
 - Regress `WinterRain` on `HarvestRain` and `AGST`. Name the fitted model `modExercise`.
 - Compute the estimate for the conditional mean of `WinterRain` for `HarvestRain`$=123.0$ and `AGST`$=16.15$. What is the CI at $\alpha=0.01$?
 - Compute the estimate for the conditional response for `HarvestRain`$=125.0$ and `AGST`$=15$. What is the CI at $\alpha=0.10$?
-- Check that `modExercise$fitted.values` is the same as `predict(modExercise, newdata = data.frame(WinterRain = wine$HarvestRain, AGST = wine$AGST))`. Why is so?
+- Check that `modExercise$fitted.values` is the same as `predict(modExercise, newdata = data.frame(HarvestRain = wine$HarvestRain, AGST = wine$AGST))`. Why is so?
 
 ```
 
@@ -1002,8 +1002,8 @@ Then, we replace \@ref(eq:yhat) in
 r^2_{y\hat y}&=\frac{s_{y\hat y}^2}{s_y^2s_{\hat y}^2}\\
 &=\frac{\left(\sum_{i=1}^n \left(Y_i-\bar Y \right)\left(\hat Y_i-\bar Y \right)\right)^2}{\sum_{i=1}^n \left(Y_i-\bar Y \right)^2\sum_{i=1}^n \left(\hat Y_i-\bar Y \right)^2}\\
 &=\frac{\left(\sum_{i=1}^n \left(Y_i-\bar Y \right)\left(\bar Y+\hat\beta_1(X_i-\bar X)-\bar Y \right)\right)^2}{\sum_{i=1}^n \left(Y_i-\bar Y \right)^2\sum_{i=1}^n \left(\bar Y+\hat\beta_1(X_i-\bar X)-\bar Y \right)^2}\\
-&=r^2_{xy}
-\end{align*}. 
+&=r^2_{xy}.
+\end{align*}
 and as a consequence $r^2_{y\hat y}=r^2_{xy}=R^2$ when $p=1$.
 
 ```{block2, type = 'rmdinsight'}
@@ -1146,7 +1146,7 @@ summary(lm(y ~ x1 + x2))
 ```
 
 ```{block, type = 'rmdexercise'}
-For the previous example, construct more predictors (`x3`, `x4`, ...) hat are independent from `y`  and check that when the predictors are added to the model, the $R^2_\text{Adj}$ decreases and the $R^2$ increases.
+For the previous example, construct more predictors (`x3`, `x4`, ...) that are independent from `y`  and check that when the predictors are added to the model, the $R^2_\text{Adj}$ decreases and the $R^2$ increases.
 ```
 
 ### Case study application {#lm-i-modfit-case}

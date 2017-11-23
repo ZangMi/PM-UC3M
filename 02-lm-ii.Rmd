@@ -33,7 +33,7 @@ The two goals of this case study are:
 - Q1. *Quantify the influence of the predictor variables in the housing prices.*
 - Q2. *Obtain the "best possible" model for decomposing the housing variables and interpret it.*
 
-We begin by making an exploratory analysis of the data with a matrix scatterplot. Since the number of variables is high, we opt to plot only five variables: `crim`, `dis`, `medv`, `nox` and `rm`. Each of them represents the five topics in which variables were classified.
+We begin by making an exploratory analysis of the data with a matrix scatterplot. Since the number of variables is high, we opt to plot only five variables: `crim`, `dis`, `medv`, `nox`, and `rm`. Each of them represents the five topics in which variables were classified.
 
 (ref:scat2title) Scatterplot matrix for `crim`, `dis`, `medv`, `nox`, and `rm` from the `Boston` dataset.
 
@@ -46,23 +46,23 @@ The diagonal panels are showing an estimate of the unknown density of each varia
 
 ## Model selection {#lm-ii-modsel}
 
-In Chapter \@ref(lm-i) we briefly saw that **the inclusion of more predictors is not for free**: there is a price to pay in terms of more variability on the coefficients estimates, harder interpretation, and possible inclusion of highly-dependent predictors. Indeed, there is a **maximum number of predictors $k$** that can be considered in a linear model for a sample size $n$: **$k\leq n-2$**. Or equivalently, there is a **minimum sample size $n$** required for fitting a model with $k$ predictors: **$n\geq k + 2$**.
+In Chapter \@ref(lm-i) we briefly saw that **the inclusion of more predictors is not for free**: there is a price to pay in terms of more variability on the coefficients estimates, harder interpretation, and possible inclusion of highly-dependent predictors. Indeed, there is a **maximum number of predictors $p$** that can be considered in a linear model for a sample size $n$: **$p\leq n-2$**. Or equivalently, there is a **minimum sample size $n$** required for fitting a model with $p$ predictors: **$n\geq k + 2$**.
 
-The interpretation of this fact is simple if we think on the geometry for $k=1$ and $k=2$:
+The interpretation of this fact is simple if we think on the geometry for $p=1$ and $p=2$:
 
-- If $k=1$, we need at least $n=2$ points to fit uniquely a line. However, this line gives no information on the vertical variation around it and hence $\hat\sigma^2$ can not be estimated (applying its formula, we would have $\hat\sigma^2=\infty$). Therefore we need at least $n=3$ points, or in other words $n\geq k + 2=3$.
-- If $k=2$, we need at least $n=3$ points to fit uniquely a plane. But this plane gives no information on the variation of the data around it and hence $\hat\sigma^2$ can not be estimated. Therefore we need $n\geq k + 2=4$.
+- If $p=1$, we need at least $n=2$ points to fit uniquely a line. However, this line gives no information on the vertical variation around it and hence $\hat\sigma^2$ can not be estimated (applying its formula, we would have $\hat\sigma^2=\infty$). Therefore we need at least $n=3$ points, or in other words $n\geq k + 2=3$.
+- If $p=2$, we need at least $n=3$ points to fit uniquely a plane. But this plane gives no information on the variation of the data around it and hence $\hat\sigma^2$ can not be estimated. Therefore we need $n\geq k + 2=4$.
 
 Another interpretation is the following:
 
-> The fitting of a linear model with $k$ predictors involves the estimation the $k+2$ parameters $(\boldsymbol{\beta},\sigma^2)$ from $n$ data points. The closer $k+2$ and $n$ are, the more variable the estimates $(\hat{\boldsymbol{\beta}},\hat\sigma^2)$ will be, since less information is available for estimating each one. In the limit case $n=k+2$, each sample point determines a parameter estimate.
+> The fitting of a linear model with $p$ predictors involves the estimation the $p+2$ parameters $(\boldsymbol{\beta},\sigma^2)$ from $n$ data points. The closer $p+2$ and $n$ are, the more variable the estimates $(\hat{\boldsymbol{\beta}},\hat\sigma^2)$ will be, since less information is available for estimating each one. In the limit case $n=p+2$, each sample point determines a parameter estimate.
 
-The *degrees of freedom* $n-k-1$ quantify the increasing on the variability of $(\hat{\boldsymbol{\beta}},\hat\sigma^2)$ when $n-k-1$ decreases. For example:
+The *degrees of freedom* $n-p-1$ quantify the increasing on the variability of $(\hat{\boldsymbol{\beta}},\hat\sigma^2)$ when $n-p-1$ decreases. For example:
 
-- $t_{n-k-1;\alpha/2}$ appears in \@ref(eq:normp2) and influences the length of the CIs for $\beta_j$, see \@ref(eq:cip). It also influences the length of the CIs for the prediction. As Figure \@ref(fig:dft) shows, when the degrees of freedom $n-k-1$ decrease, $t_{n-k-1;\alpha/2}$ increases, thus the intervals become wider.
-- $\hat\sigma^2=\frac{1}{n-k-1}\sum_{i=1}^n\hat\varepsilon_i^2$ influences the $R^2$ and $R^2_\text{Adj}$. If no relevant variables are added to the model then $\sum_{i=1}^n\hat\varepsilon_i^2$ will not change substantially. However, the reducing factor $\frac{1}{n-k-1}$ will decrease as $k$ augments, inflating $\hat\sigma^2$ and its variance. This is exactly what happened in Figure \@ref(fig:R2).
+- $t_{n-p-1;\alpha/2}$ appears in \@ref(eq:normp2) and influences the length of the CIs for $\beta_j$, see \@ref(eq:cip). It also influences the length of the CIs for the prediction. As Figure \@ref(fig:dft) shows, when the degrees of freedom $n-p-1$ decrease, $t_{n-p-1;\alpha/2}$ increases, thus the intervals become wider.
+- $\hat\sigma^2=\frac{1}{n-p-1}\sum_{i=1}^n\hat\varepsilon_i^2$ influences the $R^2$ and $R^2_\text{Adj}$. If no relevant variables are added to the model then $\sum_{i=1}^n\hat\varepsilon_i^2$ will not change substantially. However, the reducing factor $\frac{1}{n-p-1}$ will decrease as $p$ augments, inflating $\hat\sigma^2$ and its variance. This is exactly what happened in Figure \@ref(fig:R2).
 
-```{r, dft, echo = FALSE, warning = FALSE, results = 'hide', out.width = '70%', fig.show = 'hold', fig.asp = 1, fig.pos = 'h!', fig.cap = 'Effect of $\\text{df}=n-k-1$ in $t_{\\text{df};\\alpha/2}$ for $\\alpha=0.10,0.05,0.01$.', cache = TRUE}
+```{r, dft, echo = FALSE, warning = FALSE, results = 'hide', out.width = '70%', fig.show = 'hold', fig.asp = 1, fig.pos = 'h!', fig.cap = 'Effect of $\\text{df}=n-p-1$ in $t_{\\text{df};\\alpha/2}$ for $\\alpha=0.10,0.05,0.01$.', cache = TRUE}
 df <- 1:30
 alpha <- 0.10
 plot(df, qt(p = alpha/2, df = df, lower.tail = FALSE), type = "o",
@@ -84,7 +84,7 @@ Before introducing the method, we need to understand what is an **information cr
 \begin{align}
 \text{BIC}(\text{model}) = \underbrace{-2\log\ell(\text{model})}_{\text{Model fitness}} + \underbrace{\text{npar(model)}\times\log n}_{\text{Complexity}}, (\#eq:bic)
 \end{align}
-where $\ell(\text{model})$ is the *likelihood of the model* (how well the model fits the data) and $\text{npar(model)}$ is the number of parameters of the model, $k+2$ in the case of a multiple linear regression model with $k$ predictors. The AIC replaces $\log n$ by $2$ in \@ref(eq:bic), so it **penalizes less complexer models**. This is one of the reasons why BIC is preferred by some practitioners for model comparison. Also, because is *consistent* in selecting the true model: if enough data is provided, the BIC is guaranteed to select the data-generating model among a list of candidate models.
+where $\ell(\text{model})$ is the *likelihood of the model* (how well the model fits the data) and $\text{npar(model)}$ is the number of parameters of the model, $p+2$ in the case of a multiple linear regression model with $p$ predictors. The AIC replaces $\log n$ by $2$ in \@ref(eq:bic), so it **penalizes less complexer models**. This is one of the reasons why BIC is preferred by some practitioners for model comparison. Also, because is *consistent* in selecting the true model: if enough data is provided, the BIC is guaranteed to select the data-generating model among a list of candidate models.
 
 The BIC and AIC can be computed in `R` through the functions `BIC` and `AIC`. They take a model as the input.
 ```{r, collapse = TRUE, cache = TRUE}
@@ -97,15 +97,15 @@ BIC(mod1)
 BIC(mod2) # Smaller -> better
 
 # AICs
-BIC(mod1)
-BIC(mod2) # Smaller -> better
+AIC(mod1)
+AIC(mod2) # Smaller -> better
 
 # Check the summaries
 summary(mod1)
 summary(mod2)
 ```
 
-Let's go back to the selection of predictors. If we have $k$ predictors, a naive procedure would be to check *all the possible* models that can be constructed with them and then select the best one in terms of BIC/AIC. This is the so-called *best subset selection*. The problem is that there are $2^{k+1}$ possible models! Fortunately, the `stepAIC` procedure helps us navigating this ocean of models by iteratively adding useful predictors and removing the non-important ones. The function takes as input a *model employing all the available predictors*. Let's see how it works with the already studied `wine` dataset.
+Let's go back to the selection of predictors. If we have $p$ predictors, a naive procedure would be to check *all the possible* models that can be constructed with them and then select the best one in terms of BIC/AIC. This is the so-called *best subset selection*. The problem is that there are $2^{p+1}$ possible models! Fortunately, the `stepAIC` procedure helps us navigating this ocean of models by iteratively adding useful predictors and removing the non-important ones. The function takes as input a *model employing all the available predictors*. Let's see how it works with the already studied `wine` dataset.
 ```{r, echo = FALSE, collapse = TRUE, cache = TRUE}
 wine <- read.csv(file = "datasets/wine.csv", header = TRUE)
 ```
@@ -153,9 +153,9 @@ modAICBack
 `stepAIC` assumes that no `NA`'s (missing values) are present in the data. It is advised to remove the missing values in the data before. Their presence might lead to errors. To do so, employ `data = na.omit(dataset)` in the call to `lm` (if your dataset is `dataset`).
 ```
 
-We conclude highlighting a caveat on the use of the BIC and AIC: they are constructed assuming that the sample size $n$ is much larger than the number of parameters in the model ($k+2$). Therefore, they will work reasonably well if $n>>k+2$, but if this is not true they may favor unrealistic complex models. An illustration of this phenomena is Figure \@ref(fig:bic), which is the BIC/AIC version of Figure \@ref(fig:R2) for the experiment done in Section \@ref(lm-i-anova). The BIC and AIC curves tend to have local minimums close to $k=2$ and then increase. But when $k+2$ gets close to $n$, they quickly drop down. Note also how the BIC penalizes more the complexity than the AIC, which is more flat.
+We conclude highlighting a caveat on the use of the BIC and AIC: they are constructed assuming that the sample size $n$ is much larger than the number of parameters in the model ($p+2$). Therefore, they will work reasonably well if $n>>p+2$, but if this is not true they may favor unrealistic complex models. An illustration of this phenomena is Figure \@ref(fig:bic), which is the BIC/AIC version of Figure \@ref(fig:R2) for the experiment done in Section \@ref(lm-i-anova). The BIC and AIC curves tend to have local minimums close to $p=2$ and then increase. But when $p+2$ gets close to $n$, they quickly drop down. Note also how the BIC penalizes more the complexity than the AIC, which is more flat.
 
-```{r, bic, echo = FALSE, out.width = '70%', fig.pos = 'h!', fig.cap = 'Comparison of BIC and AIC for $n=200$ and $k$ ranging from $1$ to $198$. $M=100$ datasets were simulated with **only the first two** predictors being significant. The thicker curves are the mean of each color\'s curves.', fig.show = 'hold', cache = TRUE}
+```{r, bic, echo = FALSE, out.width = '70%', fig.pos = 'h!', fig.cap = 'Comparison of BIC and AIC for $n=200$ and $p$ ranging from $1$ to $198$. $M=100$ datasets were simulated with **only the first two** predictors being significant. The thicker curves are the mean of each color\'s curves.', fig.show = 'hold', cache = TRUE}
 knitr::include_graphics("images/R/BICandAIC.png")
 ```
 
@@ -190,7 +190,7 @@ We have quantified the influence of the predictor variables in the housing price
 
 ## Use of qualitative predictors {#lm-ii-qualpred}
 
-An important situation not covered so far is how to deal with *qualitative*, and not *quantitative*, predictors. Qualitative predictors, also known as *categorical* variables or, in `R`'s terminology, *factors*, are vry common, for example in social sciences. Dealing with them requires some care and proper understanding of how these variables are represented.
+An important situation not covered so far is how to deal with *qualitative*, and not *quantitative*, predictors. Qualitative predictors, also known as *categorical* variables or, in `R`'s terminology, *factors*, are very common, for example in social sciences. Dealing with them requires some care and proper understanding of how these variables are represented.
 
 The simplest case is the situation with **two levels**. A binary variable $C$ with two levels (for example, *a* and *b*) can be represented as
 \[
@@ -259,7 +259,7 @@ For example if you have a categorical variable `party` with levels `partyA`, `pa
 
 - You assume implicitly an order in the levels of `party`, since `partyA` is closer to `partyB` than to `partyC`.
 - You assume implicitly that `partyC` is three times larger than `partyA`.
-- The codification is completely arbitrary -- why not considering `1`, `1.5` and `1.75` instead of?
+- The codification is completely arbitrary -- why not considering `1`, `1.5`, and `1.75` instead of?
 
 The right way of dealing with categorical variables in regression is to set the variable as a factor and let `R` do internally the dummification.
 ```
@@ -483,7 +483,7 @@ lm(I(log(medv*1000)) ~ I(rm^2) + age + log(dis) + log(rad) + tax + ptratio + I(b
 
 <!-- ## Model diagnostics and multicollinearity {#lm-ii-diagnostics} -->
 
-<!-- As we saw in Section \@ref(lm-i-assumps), checking the assumptions of the multiple linear model through the data scatterplots becomes tricky even when $k=2$. To solve this issue, a series of *diagnostic plots* have been designed in order to evaluate graphically and in a simple way the validity of the assumptions. For illustration, we retake the `wine` dataset ([download](https://raw.githubusercontent.com/egarpor/PM-UC3M/master/datasets/wine.csv)). -->
+<!-- As we saw in Section \@ref(lm-i-assumps), checking the assumptions of the multiple linear model through the data scatterplots becomes tricky even when $p=2$. To solve this issue, a series of *diagnostic plots* have been designed in order to evaluate graphically and in a simple way the validity of the assumptions. For illustration, we retake the `wine` dataset ([download](https://raw.githubusercontent.com/egarpor/PM-UC3M/master/datasets/wine.csv)). -->
 
 <!-- ```{r, collapse = TRUE, cache = TRUE} -->
 <!-- mod <- lm(Price ~ Age + AGST + HarvestRain + WinterRain, data = wine) -->
