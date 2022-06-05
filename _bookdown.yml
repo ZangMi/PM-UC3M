@@ -1,5 +1,0 @@
-book_filename: "PM-UC3M"
-chapter_name: "Chapter "
-output_dir: _book
-clean: ["PM-UC3M.bib", "PM-UC3M.bbl"]
-delete_merged_file: true
